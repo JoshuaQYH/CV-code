@@ -103,6 +103,7 @@ CImg<double> MorphingWithLocalWarping::GetFeaturePoints(CImg<double> Image,
 			}
 		}
 	}
+	
 	PointSet->push_back(new Point(0, 0));
 	PointSet->push_back(new Point(width/2, 0));
 	PointSet->push_back(new Point(width, 0));
