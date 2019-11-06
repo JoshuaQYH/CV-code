@@ -26,7 +26,7 @@ void DisplayFeatureImage(map<vector<float>, VlSiftKeypoint> pointSet, CImg<float
 			}
 		}
 	}
-	res.display("ÌØÕ÷µãÌáÈ¡Ê¾ÒâÍ¼");
+	res.display("ç‰¹å¾ç‚¹æå–ç¤ºæ„å›¾");
 }
 
 
@@ -61,10 +61,10 @@ CImg<float> PanoImageStitching::ToGrayImage(CImg<float>& image)
 	return gray_img;
 }
 
-/*ÌáÈ¡Ã¿Ò»·ùÍ¼ÏñµÄÌØÕ÷µã*/
+/*æå–æ¯ä¸€å¹…å›¾åƒçš„ç‰¹å¾ç‚¹*/
 map<vector<float>, VlSiftKeypoint> PanoImageStitching::ExtractSIFTFeaturePoint(CImg<float> grayImage)
 {
-	cout << "siftÌØÕ÷µãÌáÈ¡" << endl;
+	cout << "siftç‰¹å¾ç‚¹æå–" << endl;
 	map<vector<float>, VlSiftKeypoint> res;
 
 	int width = grayImage.width();
@@ -77,20 +77,20 @@ map<vector<float>, VlSiftKeypoint> PanoImageStitching::ExtractSIFTFeaturePoint(C
 
 	int noctaves = 6, nlevels = 3, o_min = 0;
 
-	// ¶¨ÒåvlsiftfiltµÄ½á¹¹ÌåÖ¸Õë
+	// å®šä¹‰vlsiftfiltçš„ç»“æ„ä½“æŒ‡é’ˆ
 	VlSiftFilt* siftFilt = NULL;
 	siftFilt = vl_sift_new(width, height, noctaves, nlevels, o_min);
 
 	//int KeyPoint = 0;
 	//int idx = 0;
-	//  ¿ªÊ¼´¦Àí·ÖÆ¬
+	//  å¼€å§‹å¤„ç†åˆ†ç‰‡
 	if (vl_sift_process_first_octave(siftFilt, ImageData) != VL_ERR_EOF) {
 		while (1) {
-			// ¼ÆËãÃ¿Ò»×éÖĞµÄ¹Ø¼üµã
+			// è®¡ç®—æ¯ä¸€ç»„ä¸­çš„å…³é”®ç‚¹
 			vl_sift_detect(siftFilt);
-			// ±éÀú²¢»æÖÆÃ¿Ò»¸öµã
-			//KeyPoint += siftFilt->nkeys;  // ¼ì²âµ½µÄ¹Ø¼üµãµÄÊıÄ¿
-			VlSiftKeypoint* pKeypointList = siftFilt->keys; // ¼ì²âµ½µÄ¹Ø¼üµãÁĞ±íÖ¸Õë
+			// éå†å¹¶ç»˜åˆ¶æ¯ä¸€ä¸ªç‚¹
+			//KeyPoint += siftFilt->nkeys;  // æ£€æµ‹åˆ°çš„å…³é”®ç‚¹çš„æ•°ç›®
+			VlSiftKeypoint* pKeypointList = siftFilt->keys; // æ£€æµ‹åˆ°çš„å…³é”®ç‚¹åˆ—è¡¨æŒ‡é’ˆ
 
 			for (int i = 0; i < siftFilt->nkeys; i++) {
 				VlSiftKeypoint tmpKeyPoint = *pKeypointList;
@@ -100,16 +100,16 @@ map<vector<float>, VlSiftKeypoint> PanoImageStitching::ExtractSIFTFeaturePoint(C
 
 				//idx++;
 				double angles[4];
-				// ¼ÆËãÌØÕ÷µãµÄ·½Ïò
+				// è®¡ç®—ç‰¹å¾ç‚¹çš„æ–¹å‘
 				int angleCount = vl_sift_calc_keypoint_orientations(siftFilt, angles, &tmpKeyPoint);
 				for (int j = 0; j < angleCount; j++) {
-					// ¼ÆËãÃ¿Ò»¸ö·½ÏòµÄÃèÊö
+					// è®¡ç®—æ¯ä¸€ä¸ªæ–¹å‘çš„æè¿°
 					double tmpAngle = angles[j];
 					float* Descriptors = new float[128];
-					// Éú³ÉÌØÕ÷µãµÄÃèÊö×Ó
+					// ç”Ÿæˆç‰¹å¾ç‚¹çš„æè¿°å­
 					vl_sift_calc_keypoint_descriptor(siftFilt, Descriptors, &tmpKeyPoint, tmpAngle);
 					
-					// ¼ÓÈë½á¹û
+					// åŠ å…¥ç»“æœ
 					vector<float> tmp(128);
 					for (int k = 0; k < 128; k++) {
 						tmp[k] = Descriptors[k];
@@ -133,19 +133,19 @@ map<vector<float>, VlSiftKeypoint> PanoImageStitching::ExtractSIFTFeaturePoint(C
 }
 
 /***************************************************
- º¯Êı¹¦ÄÜ£ºÀûÓÃk-dÊ÷ÕÒ³öÁ½ÕÅÍ¼Æ¬ÖĞµÄÆ¥ÅäµÄÌØÕ÷µã
- ÊäÈë£ºÁ½¸öÍ¼ÏñµÄÌØÕ÷µã¼¯ºÏ,1 ÓÃÓÚËÑË÷£¬2 ÓÃÓÚ²éÑ¯
- Êä³ö£º·µ»ØÁ½¸öÍ¼ÏñÆ¥ÅäµÄÌØÕ÷µã¶Ô
+ å‡½æ•°åŠŸèƒ½ï¼šåˆ©ç”¨k-dæ ‘æ‰¾å‡ºä¸¤å¼ å›¾ç‰‡ä¸­çš„åŒ¹é…çš„ç‰¹å¾ç‚¹
+ è¾“å…¥ï¼šä¸¤ä¸ªå›¾åƒçš„ç‰¹å¾ç‚¹é›†åˆ,1 ç”¨äºæœç´¢ï¼Œ2 ç”¨äºæŸ¥è¯¢
+ è¾“å‡ºï¼šè¿”å›ä¸¤ä¸ªå›¾åƒåŒ¹é…çš„ç‰¹å¾ç‚¹å¯¹
 ******************************************************/
 vector<KeyPointPair> PanoImageStitching::FindKNearestNeighbor(map<vector<float>, VlSiftKeypoint> &featurePoint1, map<vector<float>, VlSiftKeypoint> &featurePoint2)
 {
 	
-	// ³õÊ¼»¯Ò»¸öÉ­ÁÖ£¬Êı¾İÀàĞÍÎªfloat£¬Î¬¶È128£¬Ê÷ÊıÄ¿1£¬¾àÀëÀàĞÍ
+	// åˆå§‹åŒ–ä¸€ä¸ªæ£®æ—ï¼Œæ•°æ®ç±»å‹ä¸ºfloatï¼Œç»´åº¦128ï¼Œæ ‘æ•°ç›®1ï¼Œè·ç¦»ç±»å‹
 	VlKDForest* forest = vl_kdforest_new(VL_TYPE_FLOAT, 128, 1, VlDistanceL1);
 
 	float* forestData = new float[128 * featurePoint1.size()];
 	int k = 0; 
-	// ½«²éÑ¯µã¼¯ÌØÕ÷ÏòÁ¿´æ´¢µ½forestData
+	// å°†æŸ¥è¯¢ç‚¹é›†ç‰¹å¾å‘é‡å­˜å‚¨åˆ°forestData
 	for (auto it = featurePoint1.begin(); it != featurePoint1.end(); it++) {
 		const vector<float> &descriptors = it->first;
 
@@ -157,32 +157,32 @@ vector<KeyPointPair> PanoImageStitching::FindKNearestNeighbor(map<vector<float>,
 		k++;
 	}
 
-	// ¹¹½¨Ò»¸ök-dÊ÷£¬´«ÈëÉ­ÁÖ£¬µã¼¯Ê÷£¬Êı¾İ
+	// æ„å»ºä¸€ä¸ªk-dæ ‘ï¼Œä¼ å…¥æ£®æ—ï¼Œç‚¹é›†æ ‘ï¼Œæ•°æ®
 	vl_kdforest_build(forest, featurePoint1.size(), forestData);
 
 	vector<KeyPointPair> res; 
 
-	// ³õÊ¼»¯ËÑË÷Ö¸Õë
+	// åˆå§‹åŒ–æœç´¢æŒ‡é’ˆ
 	VlKDForestSearcher* searcher = vl_kdforest_new_searcher(forest);
-	// ÉùÃ÷×î½üÁÚÊı×é
+	// å£°æ˜æœ€è¿‘é‚»æ•°ç»„
 	VlKDForestNeighbor neighbors[2];
 
-	// ±éÀú2µÄÃ¿Ò»¸öµã¼¯£¬ËÑË÷ Óë 1 ÖĞµÄ×î½ü2¸öÌØÕ÷µã
+	// éå†2çš„æ¯ä¸€ä¸ªç‚¹é›†ï¼Œæœç´¢ ä¸ 1 ä¸­çš„æœ€è¿‘2ä¸ªç‰¹å¾ç‚¹
 	for (auto it = featurePoint2.begin(); it != featurePoint2.end(); it++) {
 		float* tmpData = new float[128];
 
-		// ´æ´¢ËÑË÷ÌØÕ÷µã¼¯µÄÌØÕ÷ÏòÁ¿
+		// å­˜å‚¨æœç´¢ç‰¹å¾ç‚¹é›†çš„ç‰¹å¾å‘é‡
 		for (int i = 0; i < 128; i++) {
 			tmpData[i] = (it->first)[i];
 		}
 
-		// ±È½ÏÁ½¸öÊı¾İ¼¯Ö®¼äÏàËÆµã
+		// æ¯”è¾ƒä¸¤ä¸ªæ•°æ®é›†ä¹‹é—´ç›¸ä¼¼ç‚¹
 		int nVisited = vl_kdforestsearcher_query(searcher, neighbors, 2, tmpData);
 
 		float ratio = neighbors[0].distance / neighbors[1].distance;
 
 		if (ratio < 0.5) {
-			// ½ÓÊÕ¸ÃÌØÕ÷µã
+			// æ¥æ”¶è¯¥ç‰¹å¾ç‚¹
 			vector<float> des(128);
 			for (int j = 0; j < 128; j++) {
 				des[j] = forestData[j + neighbors[0].index * 128];
@@ -203,12 +203,12 @@ vector<KeyPointPair> PanoImageStitching::FindKNearestNeighbor(map<vector<float>,
 	return res;
 }
 
-/*¸ù¾İÌØÕ÷µã¶Ô¼ÆËãµ¥Ó¦¾ØÕó*/
+/*æ ¹æ®ç‰¹å¾ç‚¹å¯¹è®¡ç®—å•åº”çŸ©é˜µ*/
 HomographyMatrix PanoImageStitching::GetHomographyFromPointPairs(const vector<KeyPointPair>& pair)
 {
 	assert(pair.size() == 4);
 
-	// Òª»Ö¸´HÖĞµÄ8¸ö²ÎÊı£¬ĞèÒªÓĞ4¶ÔÌØÕ÷µã
+	// è¦æ¢å¤Hä¸­çš„8ä¸ªå‚æ•°ï¼Œéœ€è¦æœ‰4å¯¹ç‰¹å¾ç‚¹
 	float u0 = pair[0].vp1.x, v0 = pair[0].vp1.y;
 	float u1 = pair[1].vp1.x, v1 = pair[1].vp1.y;
 	float u2 = pair[2].vp1.x, v2 = pair[2].vp1.y;
@@ -266,8 +266,8 @@ HomographyMatrix PanoImageStitching::GetHomographyFromPointPairs(const vector<Ke
 }
 
 /************************************************************
-´«Èëµ¥Ó¦¾ØÕó£¬ËùÓĞÌØÕ÷µã¶Ô£¬ÒÔ¼°Ëæ»úÌôÑ¡µÄÌØÕ÷µã¶Ô
-¼ÆËã¸ÃËæ»úÌôÑ¡µÄÌØÕ÷µã¶ÔµÄÄÚµãÊıÄ¿
+ä¼ å…¥å•åº”çŸ©é˜µï¼Œæ‰€æœ‰ç‰¹å¾ç‚¹å¯¹ï¼Œä»¥åŠéšæœºæŒ‘é€‰çš„ç‰¹å¾ç‚¹å¯¹
+è®¡ç®—è¯¥éšæœºæŒ‘é€‰çš„ç‰¹å¾ç‚¹å¯¹çš„å†…ç‚¹æ•°ç›®
 ***************************************************************/
 vector<int> PanoImageStitching::ComputeInliers(HomographyMatrix HMatrix, vector<KeyPointPair> pair, set<int> randomPairIndex)
 {
@@ -276,14 +276,14 @@ vector<int> PanoImageStitching::ComputeInliers(HomographyMatrix HMatrix, vector<
 		if (randomPairIndex.find(i) != randomPairIndex.end())
 			continue;
 
-		//ÔÚÄ³Ò»ÌØÕ÷µã¶ÔÉÏ½øĞĞÑéÖ¤²âÊÔ
-		//ÏÈ»ñÈ¡±ä»»Æ¥ÅäºóµÄµã×ø±ê
+		//åœ¨æŸä¸€ç‰¹å¾ç‚¹å¯¹ä¸Šè¿›è¡ŒéªŒè¯æµ‹è¯•
+		//å…ˆè·å–å˜æ¢åŒ¹é…åçš„ç‚¹åæ ‡
 		int realX = pair[i].vp2.x;
 		int realY = pair[i].vp2.y;
 
-		// ÀûÓÃµ¥Ó¦¾ØÕó¼ÆËã±ä»»ºóµÄµãµÄ×ø±ê¡£
+		// åˆ©ç”¨å•åº”çŸ©é˜µè®¡ç®—å˜æ¢åçš„ç‚¹çš„åæ ‡ã€‚
 		int x = pair[i].vp1.x;
-		int y = pair[i].vp2.y;
+		int y = pair[i].vp1.y;
 
 		int homographyX = HMatrix.a11 * x + y * HMatrix.a12 + HMatrix.a13 * x * y + HMatrix.a21;
 		int homographyY = HMatrix.a22 * x + y * HMatrix.a23 + HMatrix.a31 * x * y + HMatrix.a32;
@@ -298,7 +298,7 @@ vector<int> PanoImageStitching::ComputeInliers(HomographyMatrix HMatrix, vector<
 }
 
 
-/*ÀûÓÃ×î´óµÄ¿ÉĞÅµã¼¯ÒÔ¼°×îĞ¡¶ş³Ë·¨¹À¼Æ×îÖÕµÄµ¥Ó¦¾ØÕó*/
+/*åˆ©ç”¨æœ€å¤§çš„å¯ä¿¡ç‚¹é›†ä»¥åŠæœ€å°äºŒä¹˜æ³•ä¼°è®¡æœ€ç»ˆçš„å•åº”çŸ©é˜µ*/
 HomographyMatrix PanoImageStitching::ComputeLeastSquaresHomographyMatrix(vector<KeyPointPair> pairs, vector<int> inlier_Indexs)
 {
 	int calc_size = inlier_Indexs.size();
@@ -333,26 +333,26 @@ HomographyMatrix PanoImageStitching::ComputeLeastSquaresHomographyMatrix(vector<
 
 
 /********************************
-¾­¹ıransacµÃµ½ÌØÕ÷µã¶Ô¼¯ºÏµÄµ¥Ó¦¾ØÕó
+ç»è¿‡ransacå¾—åˆ°ç‰¹å¾ç‚¹å¯¹é›†åˆçš„å•åº”çŸ©é˜µ
 **********************************/
 HomographyMatrix PanoImageStitching::RANSACForHomographyMatrix(vector<KeyPointPair> featurePointPair)
 {
 	if (DEBUG) cout << "RANSAC for matrix" << endl;
-	// ¹ıÂË½ÏÉÙµÄÌØÕ÷¶Ô
+	// è¿‡æ»¤è¾ƒå°‘çš„ç‰¹å¾å¯¹
 	assert(featurePointPair.size() >= NUM_OF_PAIR);
 
-	float P = CONFIDENCE;  // ÖÃĞÅ¶È
+	float P = CONFIDENCE;  // ç½®ä¿¡åº¦
 	float p = NUM_OF_PAIR;  
 	float inlierRatio = INLIER_RATIO;
-	int iterNum = ceil(log(1 - P) / log(1 - pow(inlierRatio, p))); // ¼ÆËãµü´ú´ÎÊı
+	int iterNum = ceil(log(1 - P) / log(1 - pow(inlierRatio, p))); // è®¡ç®—è¿­ä»£æ¬¡æ•°
 	
-	vector<int> maxInliersIndex;  //±£´æÃ¿´Îµü´úÊıÁ¿×î¶àµÄ¿ÉĞÅµã
+	vector<int> maxInliersIndex;  //ä¿å­˜æ¯æ¬¡è¿­ä»£æ•°é‡æœ€å¤šçš„å¯ä¿¡ç‚¹
 	int tmpIterNum = iterNum;
-	cout << "µü´ú´ÎÊı" << iterNum << endl;
+	cout << "è¿­ä»£æ¬¡æ•°" << iterNum << endl;
 	while (--iterNum) {
-		// Ëæ»ú´æ´¢ËÄ¶ÔÌØÕ÷µã
+		// éšæœºå­˜å‚¨å››å¯¹ç‰¹å¾ç‚¹
 		vector<KeyPointPair> randomPairs;
-		// ´æ´¢Ëæ»úÌØÕ÷µã¶ÔµÄÏÂ±ê
+		// å­˜å‚¨éšæœºç‰¹å¾ç‚¹å¯¹çš„ä¸‹æ ‡
 		set<int> indexSet;
 
 		for (int i = 0; i < NUM_OF_PAIR; i++) {
@@ -364,17 +364,17 @@ HomographyMatrix PanoImageStitching::RANSACForHomographyMatrix(vector<KeyPointPa
 			
 			indexSet.insert(randomIndex);
 		}
-		// ´ÓÌôÑ¡µÃµ½µÄËÄ¶ÔÌØÕ÷µã¶Ô£¬¼ÆËãµÃµ½µ¥Ó¦¾ØÕó
+		// ä»æŒ‘é€‰å¾—åˆ°çš„å››å¯¹ç‰¹å¾ç‚¹å¯¹ï¼Œè®¡ç®—å¾—åˆ°å•åº”çŸ©é˜µ
 		HomographyMatrix HMatrix = this->GetHomographyFromPointPairs(randomPairs);
-	//	cout << "---------------------- ransac µÄ¾ØÕó" << endl;
+	//	cout << "---------------------- ransac çš„çŸ©é˜µ" << endl;
 		//HMatrix.print();
 		
-		// ÀûÓÃµ¥Ó¦¾ØÕó£¬Ñ¡ÔñµÄÌØÕ÷µã¶ÔÏÂ±ê£¬ËùÓĞÌØÕ÷µã¶Ô£¬¼ÆËã¿ÉĞÅµãµÄÏÂ±ê
+		// åˆ©ç”¨å•åº”çŸ©é˜µï¼Œé€‰æ‹©çš„ç‰¹å¾ç‚¹å¯¹ä¸‹æ ‡ï¼Œæ‰€æœ‰ç‰¹å¾ç‚¹å¯¹ï¼Œè®¡ç®—å¯ä¿¡ç‚¹çš„ä¸‹æ ‡
 		vector<int> inliersIndex = ComputeInliers(HMatrix, featurePointPair, indexSet);
-	//	cout << "ÄÚµãÊıÄ¿Îª "<<inliersIndex.size() << endl;
-	///	cout << "×î¶àÄÚµãÊıÎª" << maxInliersIndex.size() << endl;
+	//	cout << "å†…ç‚¹æ•°ç›®ä¸º "<<inliersIndex.size() << endl;
+	///	cout << "æœ€å¤šå†…ç‚¹æ•°ä¸º" << maxInliersIndex.size() << endl;
 	//	cout << "----------------------" << endl;
-		// ±£´æÓµÓĞ×î¶à¿ÉĞÅµãµÄÌØÕ÷µã¶Ô
+		// ä¿å­˜æ‹¥æœ‰æœ€å¤šå¯ä¿¡ç‚¹çš„ç‰¹å¾ç‚¹å¯¹
 		if (inliersIndex.size() > maxInliersIndex.size()) {
 			maxInliersIndex.clear();
 			for (int i = 0; i < inliersIndex.size(); i++) {
@@ -385,19 +385,19 @@ HomographyMatrix PanoImageStitching::RANSACForHomographyMatrix(vector<KeyPointPa
 			iterNum += tmpIterNum;
 	}
 	//cout << "maxInliersIndex " << maxInliersIndex.size() << endl;
-	// ¸ù¾İÑ¡³öµÄµÄ¿ÉĞÅµãµÄÏÂ±ê£¬Ê¹ÓÃ×îĞ¡¶ş³Ë·¨ÖØĞÂ¹À¼Æµ¥Ó¦¾ØÕó
+	// æ ¹æ®é€‰å‡ºçš„çš„å¯ä¿¡ç‚¹çš„ä¸‹æ ‡ï¼Œä½¿ç”¨æœ€å°äºŒä¹˜æ³•é‡æ–°ä¼°è®¡å•åº”çŸ©é˜µ
 	HomographyMatrix H = ComputeLeastSquaresHomographyMatrix(featurePointPair, maxInliersIndex);
 	//cout << "--------------" << endl;
 	//H.print();
-	//cout << "×îÖÕµ¥Ó¦¾ØÕó,ÄÚµãÊıÎª" << maxInliersIndex.size()<< endl;
-	// ¼ì²éµ¥Ó¦¾ØÕóµÄÓÅÁÓ
+	//cout << "æœ€ç»ˆå•åº”çŸ©é˜µ,å†…ç‚¹æ•°ä¸º" << maxInliersIndex.size()<< endl;
+	// æ£€æŸ¥å•åº”çŸ©é˜µçš„ä¼˜åŠ£
 
 	return H;
 }
 
-/*¼ì²éµ¥Ó¦¾ØÕóÊÇ·ñÊÇºÃµÄ
-Ìõ¼ş1£º H£¨3£¬1£© H£¨3£¬2£©´óÓÚ×î´óÍ¸ÊÓ¶È 2e - 3·µ»Øtrue 
-Ìõ¼ş2£º ¼ÆËã×óÉÏ½Ç2*2¾ØÕóµÄĞĞÁĞÊ½£¬Èç¹û´óÓÚ0ÔòÊÇ±£³Ö·½ÏòµÄ£¬·ñÔò·­×ª·µ»Øfalse*/
+/*æ£€æŸ¥å•åº”çŸ©é˜µæ˜¯å¦æ˜¯å¥½çš„
+æ¡ä»¶1ï¼š Hï¼ˆ3ï¼Œ1ï¼‰ Hï¼ˆ3ï¼Œ2ï¼‰å¤§äºæœ€å¤§é€è§†åº¦ 2e - 3è¿”å›true 
+æ¡ä»¶2ï¼š è®¡ç®—å·¦ä¸Šè§’2*2çŸ©é˜µçš„è¡Œåˆ—å¼ï¼Œå¦‚æœå¤§äº0åˆ™æ˜¯ä¿æŒæ–¹å‘çš„ï¼Œå¦åˆ™ç¿»è½¬è¿”å›false*/
 bool PanoImageStitching::MathVerification(HomographyMatrix HMatrix)
 {
 	float HOMO_MAX_PERSPECTIVE = 0.003;
@@ -408,7 +408,7 @@ bool PanoImageStitching::MathVerification(HomographyMatrix HMatrix)
 	return true;
 }
 
-/*´«Èë·ÂÉä±ä»»µÄ¾ØÕó¼ÆËãÆ´½ÓºóÍ¼ÏñµÄ³¤¶ÈºÍ¿í¶È*/
+/*ä¼ å…¥ä»¿å°„å˜æ¢çš„çŸ©é˜µè®¡ç®—æ‹¼æ¥åå›¾åƒçš„é•¿åº¦å’Œå®½åº¦*/
 CImg<float> PanoImageStitching::CalSizeOfStitchingImage(CImg<float> stitchedImage, CImg<float> adjacentImage, HomographyMatrix transformMatrix)
 {
 	CImg<float> res(2, 3);
@@ -419,16 +419,16 @@ CImg<float> PanoImageStitching::CalSizeOfStitchingImage(CImg<float> stitchedImag
 	int stitched_w = stitchedImage._width;
 	int stitched_h = stitchedImage._height;
 
-	// ¼ÆËã±ä»»ºóxµÄ×îĞ¡Öµ
+	// è®¡ç®—å˜æ¢åxçš„æœ€å°å€¼
 	float minX = 0;
-	// ´ÓËÄ¸ö½Çµã¿ªÊ¼±ä»»
+	// ä»å››ä¸ªè§’ç‚¹å¼€å§‹å˜æ¢
 	minX = cimg::min(get_warped_x(0, 0, transformMatrix), 
 		get_warped_x(adj_w - 1, 0, transformMatrix),
 		get_warped_x(0, adj_h - 1, transformMatrix), 
 		get_warped_x(adj_w - 1, adj_h - 1, transformMatrix));
 	if (minX > 0) minX = 0;
 
-	// ¼ÆËã±ä»»ºóyµÄ×îĞ¡Öµ
+	// è®¡ç®—å˜æ¢åyçš„æœ€å°å€¼
 	float minY = 0;
 	minY = cimg::min(get_warped_y(0, 0, transformMatrix),
 		get_warped_y(adj_w - 1, 0, transformMatrix),
@@ -436,7 +436,7 @@ CImg<float> PanoImageStitching::CalSizeOfStitchingImage(CImg<float> stitchedImag
 		get_warped_y(adj_w - 1, adj_h - 1, transformMatrix));
 	if (minY > 0) minY = 0;
 	
-	// ¼ÆËã±ä»»ºó xµÄ×î´óÖµ
+	// è®¡ç®—å˜æ¢å xçš„æœ€å¤§å€¼
 	float maxX = 0;
 	maxX = cimg::max(get_warped_x(0, 0, transformMatrix),
 		get_warped_x(adj_w - 1, 0, transformMatrix),
@@ -444,7 +444,7 @@ CImg<float> PanoImageStitching::CalSizeOfStitchingImage(CImg<float> stitchedImag
 		get_warped_x(adj_w - 1, adj_h - 1, transformMatrix));
 	if (maxX < stitched_w) maxX = stitched_w;
 
-	// ¼ÆËã±ä»»ºóyµÄ×î´óÖµ
+	// è®¡ç®—å˜æ¢åyçš„æœ€å¤§å€¼
 	float maxY = 0;
 	maxY = cimg::max(get_warped_y(0, 0, transformMatrix),
 		get_warped_y(adj_w - 1, 0, transformMatrix),
@@ -472,7 +472,7 @@ CImg<float> PanoImageStitching::CalSizeOfStitchingImage(CImg<float> stitchedImag
 }
 
 
-// ÀûÓÃx£¬ yÆ«ÒÆÁ¿£¬½«Æ´½ÓÍê³ÉµÄÍ¼Æ¬£¬Ìæ»»µ½ÏÂÒ»ÕÅÒªÆ´½ÓµÄÍ¼Æ¬ÖĞ¡£
+// åˆ©ç”¨xï¼Œ yåç§»é‡ï¼Œå°†æ‹¼æ¥å®Œæˆçš„å›¾ç‰‡ï¼Œæ›¿æ¢åˆ°ä¸‹ä¸€å¼ è¦æ‹¼æ¥çš„å›¾ç‰‡ä¸­ã€‚
 void PanoImageStitching::ShiftImageByOffset(CImg<float>& stitchedImg, CImg<float>& dstImg, int offsetX, int offsetY)
 {
 	cimg_forXY(dstImg, x, y) {
@@ -486,10 +486,10 @@ void PanoImageStitching::ShiftImageByOffset(CImg<float>& stitchedImg, CImg<float
 		}
 	}
 
-//	dstImg.display("Í¼Æ¬Æ«ÒÆ");
+//	dstImg.display("å›¾ç‰‡åç§»");
 }
 
-/*ÀûÓÃµ¥Ó¦¾ØÕó¶ÔÍ¼Ïñ½øĞĞÅ¤Çú*/
+/*åˆ©ç”¨å•åº”çŸ©é˜µå¯¹å›¾åƒè¿›è¡Œæ‰­æ›²*/
 void PanoImageStitching::WarpingImageWithHomography(CImg<float>& stitchedImg, CImg<float>& dstImage, HomographyMatrix H, float offsetX, float offsetY)
 {//
 	//cout << stitchedImg._width << " " << stitchedImg._height << "  " << dstImage._width << " " << dstImage._height << endl;
@@ -503,10 +503,10 @@ void PanoImageStitching::WarpingImageWithHomography(CImg<float>& stitchedImg, CI
 			}
 		}
 	}
-//	dstImage.display("Í¼Æ¬Å¤Çú");
+//	dstImage.display("å›¾ç‰‡æ‰­æ›²");
 }
 
-/*ÀûÓÃxyÆ«ÒÆÁ¿¼ÆËãÌØÕ÷µãµÄÆ«ÒÆºóµÄÎ»×Ó*/
+/*åˆ©ç”¨xyåç§»é‡è®¡ç®—ç‰¹å¾ç‚¹çš„åç§»åçš„ä½å­*/
 void PanoImageStitching::ShifFeaturePointByOffset(map<vector<float>, VlSiftKeypoint>& featurePointSet, int offsetX, int offsetY)
 {
 	for (auto it = featurePointSet.begin(); it != featurePointSet.end(); it++) {
@@ -518,7 +518,7 @@ void PanoImageStitching::ShifFeaturePointByOffset(map<vector<float>, VlSiftKeypo
 	
 }
 
-/* ÀûÓÃµ¥Ó¦¾ØÕóÖØĞÂ¸üĞÂÌØÕ÷µãµÄ×ø±ê*/
+/* åˆ©ç”¨å•åº”çŸ©é˜µé‡æ–°æ›´æ–°ç‰¹å¾ç‚¹çš„åæ ‡*/
 void PanoImageStitching::WarpingFeaturePointWithHomography(map<vector<float>, VlSiftKeypoint>& featurePointSet, HomographyMatrix H, int offsetX, int offsetY)
 {
 	for (auto it = featurePointSet.begin(); it != featurePointSet.end(); it++) {
@@ -534,7 +534,7 @@ void PanoImageStitching::WarpingFeaturePointWithHomography(map<vector<float>, Vl
 }
 
 
-/*¶à²¨¶ÎÈÚºÏº¯Êı½Ó¿Ú
+/*å¤šæ³¢æ®µèåˆå‡½æ•°æ¥å£
 1. 
 
 
@@ -697,7 +697,7 @@ void PanoImageStitching::Crop(CImg<float>& stichedImg)
 	int h = stichedImg._height;
 
 	int minX = 0;
-	// ´ÓÉÏµ½Ğ¡±éÀú£¬ÑØÍ¼Ïñ±ßÔµ²éÕÒ
+	// ä»ä¸Šåˆ°å°éå†ï¼Œæ²¿å›¾åƒè¾¹ç¼˜æŸ¥æ‰¾
 	for (int x = 1; x < w; x++) {
 		minX++;
 		bool flag = false;
@@ -735,15 +735,15 @@ void PanoImageStitching::StartStitching()
 	
 	for (int i = 0; i < imageNum; i++) {
 		imageGroup[i] = ImageToSphericalCoordinates(imageGroup[i]);
-		if (DEBUG) cout << i << "Í¼Æ¬×ªÎªÇòÃæ×ø±êÍê³É£¡" << endl;
+		if (DEBUG) cout << i << "å›¾ç‰‡è½¬ä¸ºçƒé¢åæ ‡å®Œæˆï¼" << endl;
 		CImg<float> grayImage = ToGrayImage(imageGroup[i]);
-		if (DEBUG) cout << i << "²ÊÉ«Í¼Æ¬Éú³ÉºÚÉ«Í¼Æ¬" << endl;
+		if (DEBUG) cout << i << "å½©è‰²å›¾ç‰‡ç”Ÿæˆé»‘è‰²å›¾ç‰‡" << endl;
 		//grayImage.display();
 		siftFeaturePointsGroup.push_back(ExtractSIFTFeaturePoint(grayImage));
-		if (DEBUG) cout << i << "ÌáÈ¡Í¼Æ¬ÌØÕ÷µãÍê³É£¡" << endl;
+		if (DEBUG) cout << i << "æå–å›¾ç‰‡ç‰¹å¾ç‚¹å®Œæˆï¼" << endl;
 	}
 	cout << "------------" << endl;
-	imageGroup[0].display("ÇòÃæ×ø±ê");
+	imageGroup[0].display("çƒé¢åæ ‡");
 	DisplayFeatureImage(siftFeaturePointsGroup[0], imageGroup[0]);
 
 	for (int i = 0; i < imageNum; i++) {
@@ -761,47 +761,47 @@ void PanoImageStitching::StartStitching()
 	for (int i = 0; i < imageNum; i++) {
 		for (int j = 0; j < imageNum; j++) {
 			if (i == j) continue;
-			if (DEBUG) cout << "knnËÑË÷ÖĞÁ½¸öÌØÕ÷µã¼¯µÄ´óĞ¡£º" << siftFeaturePointsGroup[i].size() << " " << siftFeaturePointsGroup[j].size() << endl;
+			if (DEBUG) cout << "knnæœç´¢ä¸­ä¸¤ä¸ªç‰¹å¾ç‚¹é›†çš„å¤§å°ï¼š" << siftFeaturePointsGroup[i].size() << " " << siftFeaturePointsGroup[j].size() << endl;
 			vector<KeyPointPair> featurePointsPair = FindKNearestNeighbor(
 				siftFeaturePointsGroup[i], siftFeaturePointsGroup[j]);
-			if (DEBUG) cout << i << " " << j << " KNNËã·¨½øĞĞÌØÕ÷Æ¥ÅäÍê³É£¡" << endl;
+			if (DEBUG) cout << i << " " << j << " KNNç®—æ³•è¿›è¡Œç‰¹å¾åŒ¹é…å®Œæˆï¼" << endl;
 			
 			if (featurePointsPair.size() >= KEYPOINTS_PAIRS_THRESHOLD) {
 				adjacentImages[i].push_back(j);
 				//adjacentImages[j].push_back(i);
 				adjacentFlag[i][j] = true;
-				if (DEBUG) cout << imageFileNameGroup[i] << "  " << imageFileNameGroup[j] << " ´æÔÚÁÚ½ÓµÄ¿ÉÄÜ¡£" << featurePointsPair.size() << " ¸öÆ¥Åä¶Ô" << endl;
+				if (DEBUG) cout << imageFileNameGroup[i] << "  " << imageFileNameGroup[j] << " å­˜åœ¨é‚»æ¥çš„å¯èƒ½ã€‚" << featurePointsPair.size() << " ä¸ªåŒ¹é…å¯¹" << endl;
 			}
 		}
 	}
 
 	
-	/*Ê¹ÓÃ¹ã¶ÈËÑË÷£¬ÕÒµ½Ò»¸öºÏÊÊµÄÁÚ½ÓĞòÁĞ£¬È»ºóÆ´½Ó*/
+	/*ä½¿ç”¨å¹¿åº¦æœç´¢ï¼Œæ‰¾åˆ°ä¸€ä¸ªåˆé€‚çš„é‚»æ¥åºåˆ—ï¼Œç„¶åæ‹¼æ¥*/
 	int startIndex = 0;
-	queue<int> ToStitchImageIndex;  // Ê¹ÓÃ¶ÓÁĞÀ´¹ÜÀíÎ´Æ´½ÓµÄÍ¼Ïñ
+	queue<int> ToStitchImageIndex;  // ä½¿ç”¨é˜Ÿåˆ—æ¥ç®¡ç†æœªæ‹¼æ¥çš„å›¾åƒ
 	ToStitchImageIndex.push(startIndex);
 	CImg<float> stitchedImage = imageGroup[startIndex];
 	int prevIndex = startIndex;
-	cout << "¿ªÊ¼Æ´½Ó" << endl;
+	cout << "å¼€å§‹æ‹¼æ¥" << endl;
 	while (!ToStitchImageIndex.empty()) {
 		int frontIndex = ToStitchImageIndex.front();
 		ToStitchImageIndex.pop();
 
-		// ±éÀú¿ÉÄÜµÄÁÚ½Óµã
+		// éå†å¯èƒ½çš„é‚»æ¥ç‚¹
 		for (int i = 0; i < adjacentImages[frontIndex].size(); i++) {
 			int adjcentImageIndex = adjacentImages[frontIndex][i];
-			// ÏÈ¼ÓÈëµ±Ç°½áµãµÄ×Ó½áµã
+			// å…ˆåŠ å…¥å½“å‰ç»“ç‚¹çš„å­ç»“ç‚¹
 			if (!adjacentFlag[frontIndex][adjcentImageIndex]) {
-				continue;  // Æ´½ÓºÃÁË£¬Ìø¹ı
+				continue;  // æ‹¼æ¥å¥½äº†ï¼Œè·³è¿‡
 			}
 			else {
 				adjacentFlag[frontIndex][adjcentImageIndex] = false;
 				adjacentFlag[adjcentImageIndex][frontIndex] = false;
-				// ¼ÓÈë¶ÓÁĞ
+				// åŠ å…¥é˜Ÿåˆ—
 				ToStitchImageIndex.push(adjcentImageIndex);
 			}
 
-			// ¼ÆËãÇ°Ïò±ä»»ºÍ·´Ïò±ä»»µÄÌØÕ÷µã¶Ô
+			// è®¡ç®—å‰å‘å˜æ¢å’Œåå‘å˜æ¢çš„ç‰¹å¾ç‚¹å¯¹
 			vector<KeyPointPair>  src_to_dst_key_points = FindKNearestNeighbor(siftFeaturePointsGroup[frontIndex], siftFeaturePointsGroup[adjcentImageIndex]);
 			vector<KeyPointPair>  dst_to_src_key_points = FindKNearestNeighbor(siftFeaturePointsGroup[adjcentImageIndex], siftFeaturePointsGroup[frontIndex]);
 			
@@ -810,10 +810,10 @@ void PanoImageStitching::StartStitching()
 			for (auto it = src_to_dst_key_points.begin(); it != src_to_dst_key_points.end(); it++) {
 				dst_to_src_key_points.push_back(KeyPointPair(src_to_dst_key_points[j].vp2, src_to_dst_key_points[j].vp1));
 			}*/
-			//cout << "Ç°Ïò±ä»»ÌØÕ÷µã¶Ô´óĞ¡" << src_to_dst_key_points.size() << endl;
-			//cout << "·´Ïò±ä»»ÌØÕ÷µã¶Ô´óĞ¡" << dst_to_src_key_points.size() << endl;
+			//cout << "å‰å‘å˜æ¢ç‰¹å¾ç‚¹å¯¹å¤§å°" << src_to_dst_key_points.size() << endl;
+			//cout << "åå‘å˜æ¢ç‰¹å¾ç‚¹å¯¹å¤§å°" << dst_to_src_key_points.size() << endl;
 
-			// Æ½ºâÇ°ºó±ä»»µÄÌØÕ÷µã¶Ô
+			// å¹³è¡¡å‰åå˜æ¢çš„ç‰¹å¾ç‚¹å¯¹
 			
 			if (src_to_dst_key_points.size() > dst_to_src_key_points.size()) {
 				dst_to_src_key_points.clear();
@@ -829,12 +829,12 @@ void PanoImageStitching::StartStitching()
 					src_to_dst_key_points.push_back(pairs);
 				}
 			}
-			//cout << "Æ½ºâºó" << endl;
-			//cout << "Ç°Ïò±ä»»ÌØÕ÷µã¶Ô´óĞ¡" << src_to_dst_key_points.size() << endl;
-			//cout << "·´Ïò±ä»»ÌØÕ÷µã¶Ô´óĞ¡" << dst_to_src_key_points.size() << endl;
+			//cout << "å¹³è¡¡å" << endl;
+			//cout << "å‰å‘å˜æ¢ç‰¹å¾ç‚¹å¯¹å¤§å°" << src_to_dst_key_points.size() << endl;
+			//cout << "åå‘å˜æ¢ç‰¹å¾ç‚¹å¯¹å¤§å°" << dst_to_src_key_points.size() << endl;
 
 
-			// RANSACËã·¨¼ÆËãÇ°ºóÁ½¸ö±ä»»µÄµ¥Ó¦¾ØÕó
+			// RANSACç®—æ³•è®¡ç®—å‰åä¸¤ä¸ªå˜æ¢çš„å•åº”çŸ©é˜µ
 			HomographyMatrix src_to_dst_matrix = RANSACForHomographyMatrix(src_to_dst_key_points);
 			HomographyMatrix dst_to_src_matrix = RANSACForHomographyMatrix(dst_to_src_key_points);
 
@@ -842,7 +842,7 @@ void PanoImageStitching::StartStitching()
 			src_to_dst_matrix.print();
 			dst_to_src_matrix.print();
 		
-			// ´ÖÂÔ¼ÆËãÆ´½ÓºóµÄÍ¼Ïñ¿í¸ßĞÅÏ¢
+			// ç²—ç•¥è®¡ç®—æ‹¼æ¥åçš„å›¾åƒå®½é«˜ä¿¡æ¯
 			CImg<float> lengthInfo = CalSizeOfStitchingImage(stitchedImage, imageGroup[adjcentImageIndex], dst_to_src_matrix);
 			int outputX = lengthInfo(0, 0);
 			int outputY = lengthInfo(0, 1);
@@ -861,27 +861,27 @@ void PanoImageStitching::StartStitching()
 
 			CImg<float> _adjcentImage = imageGroup[adjcentImageIndex];
 
-			// ¶ÔÒªÆ´½ÓµÄÍ¼Æ¬½øĞĞÆ¯ÒÆ£¬È»ºóµ¥Ó¦¾ØÕó±ä»»µÃµ½Í¼Æ¬ nextstich
+			// å¯¹è¦æ‹¼æ¥çš„å›¾ç‰‡è¿›è¡Œæ¼‚ç§»ï¼Œç„¶åå•åº”çŸ©é˜µå˜æ¢å¾—åˆ°å›¾ç‰‡ nextstich
 			WarpingImageWithHomography(_adjcentImage, nextStitch, src_to_dst_matrix, minX, minY);
-			// ¶ÔÆ´½ÓºóµÄÍ¼Æ¬½øĞĞÆ¯ÒÆ laststich
+			// å¯¹æ‹¼æ¥åçš„å›¾ç‰‡è¿›è¡Œæ¼‚ç§» laststich
 			ShiftImageByOffset(stitchedImage, lastStitch, minX, minY);
-			// ¸üĞÂÌØÕ÷µã£¬ĞŞ¸Ä¸ÕÆ´½ÓµÄÍ¼Æ¬ÌØÕ÷µã×ø±ê
+			// æ›´æ–°ç‰¹å¾ç‚¹ï¼Œä¿®æ”¹åˆšæ‹¼æ¥çš„å›¾ç‰‡ç‰¹å¾ç‚¹åæ ‡
 			WarpingFeaturePointWithHomography(siftFeaturePointsGroup[adjcentImageIndex], dst_to_src_matrix, minX, minY);
-			// ¸üĞÂÌØÕ÷µã£¬ĞŞ¸Äµ±Ç°Æ´½ÓºÃµÄÍ¼Æ¬µÄÌØÕ÷µã×ø±ê
+			// æ›´æ–°ç‰¹å¾ç‚¹ï¼Œä¿®æ”¹å½“å‰æ‹¼æ¥å¥½çš„å›¾ç‰‡çš„ç‰¹å¾ç‚¹åæ ‡
 			ShifFeaturePointByOffset(siftFeaturePointsGroup[prevIndex], minX, minY);
 
-			// ¶ÔÁ½ÕÅÍ¼Æ¬½øĞĞ¶à²¨¶ÎÈÚºÏ£¬Íê³ÉÆ´½Ó¡£
-			lastStitch.display("±»Æ´½ÓÍ¼Æ¬");
-			nextStitch.display("ÏÂÒ»²½ÒªÆ´½ÓµÄÍ¼Æ¬");
+			// å¯¹ä¸¤å¼ å›¾ç‰‡è¿›è¡Œå¤šæ³¢æ®µèåˆï¼Œå®Œæˆæ‹¼æ¥ã€‚
+			lastStitch.display("è¢«æ‹¼æ¥å›¾ç‰‡");
+			nextStitch.display("ä¸‹ä¸€æ­¥è¦æ‹¼æ¥çš„å›¾ç‰‡");
 
 			cout << "Image " << imageFileNameGroup[adjcentImageIndex] << " has stitched to image " << imageFileNameGroup[prevIndex] << endl;
 			stitchedImage = blendTwoImages(lastStitch, nextStitch);
-			stitchedImage.display("Æ´½ÓÈÚºÏ½á¹û");
-			// ĞŞ¸Äµ±Ç°Æ´½ÓÍ¼µÄ×îºóÒ»¿éÍ¼Æ¬µÄË÷Òı
+			stitchedImage.display("æ‹¼æ¥èåˆç»“æœ");
+			// ä¿®æ”¹å½“å‰æ‹¼æ¥å›¾çš„æœ€åä¸€å—å›¾ç‰‡çš„ç´¢å¼•
 			prevIndex = adjcentImageIndex;
 		}
 	}
-	stitchedImage.display("Æ´½ÓºóµÄÍ¼Ïñ");
+	stitchedImage.display("æ‹¼æ¥åçš„å›¾åƒ");
 
 	//Crop(stitchedImage);
 }
